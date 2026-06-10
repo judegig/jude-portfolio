@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Jude — Full-Stack & AI Developer{% endblock %}
+
+{% block extra_head %}
+<style>
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fade-in-up {
+    opacity: 0;
+    animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-450 { animation-delay: 450ms; }
+  .delay-600 { animation-delay: 600ms; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-6 py-24">
+
+  <!-- Hero -->
+  <div class="mb-20">
+    <div class="inline-flex items-center gap-2 bg-neutral-900/5 border border-neutral-900/15 rounded-full px-3 py-1 text-[10px] uppercase tracking-wider font-semibold text-neutral-800 mb-6 animate-fade-in-up delay-100">
+      <span class="w-1.5 h-1.5 bg-neutral-900 rounded-full animate-pulse"></span>
+      Open to opportunities
+    </div>
+    <h1 class="font-serif text-5xl md:text-7xl font-normal text-neutral-900 mb-6 leading-tight tracking-tight animate-fade-in-up delay-200">
+      Hi, I'm Jude.<br>
+      <span class="italic font-normal text-neutral-700">I build AI-native websites and apps.</span>
+    </h1>
+    <p class="text-neutral-600 text-lg font-light tracking-wide max-w-xl mb-8 leading-relaxed animate-fade-in-up delay-300">
+      Full-stack developer focused on weaving AI into real systems — not bolting it on as an afterthought.
+      Django &middot; FastAPI &middot; React &middot; Local LLMs.
+    </p>
+    <div class="flex items-center gap-3 animate-fade-in-up delay-450">
+      <a href="{% url 'agent:page' %}" class="btn-primary">Ask my AI agent &rarr;</a>
+      <a href="{% url 'showcase:page' %}" class="btn-ghost">View projects</a>
+    </div>
+  </div>
+
+  <!-- Three feature cards -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 animate-fade-in-up delay-600">
+
+    <!-- Card 1: Career Agent -->
+    <a href="{% url 'agent:page' %}" class="card p-6 hover:border-neutral-900 transition-all duration-200 group block">
+      <div class="w-10 h-10 bg-neutral-900/5 rounded-lg flex items-center justify-center mb-4 group-hover:bg-neutral-900/10 transition-colors">
+        <svg class="w-5 h-5 text-neutral-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+        </svg>
+      </div>
+      <h3 class="text-neutral-900 font-serif text-xl font-medium mb-2">Career Agent</h3>
+      <p class="text-neutral-600 text-sm font-light leading-relaxed">Chat with an LLM that represents me. Ask about my stack, projects, or what I'm looking for. Streaming responses via SSE.</p>
+      <div class="flex gap-2 mt-4">
+        <span class="tag">Django</span>
+        <span class="tag">Groq</span>
+        <span class="tag">SSE</span>
+      </div>
+    </a>
+
+    <!-- Card 2: Financial Tracker -->
+    <a href="{% url 'showcase:page' %}" class="card p-6 hover:border-neutral-900 transition-all duration-200 group block">
+      <div class="w-10 h-10 bg-neutral-900/5 rounded-lg flex items-center justify-center mb-4 group-hover:bg-neutral-900/10 transition-colors">
+        <svg class="w-5 h-5 text-neutral-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+        </svg>
+      </div>
+      <h3 class="text-neutral-900 font-serif text-xl font-medium mb-2">Finance Tracker</h3>
+      <p class="text-neutral-600 text-sm font-light leading-relaxed">Personal finance tracker — expenses, budgets, loans, and AI spending analysis. FastAPI + React + Neon Postgres.</p>
+      <div class="flex gap-2 mt-4">
+        <span class="tag">FastAPI</span>
+        <span class="tag">React</span>
+        <span class="tag">Groq</span>
+      </div>
+    </a>
+
+    <!-- Card 3: Architecture Simulator -->
+    <a href="{% url 'simulator:page' %}" class="card p-6 hover:border-neutral-900 transition-all duration-200 group block">
+      <div class="w-10 h-10 bg-neutral-900/5 rounded-lg flex items-center justify-center mb-4 group-hover:bg-neutral-900/10 transition-colors">
+        <svg class="w-5 h-5 text-neutral-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+      </div>
+      <h3 class="text-neutral-900 font-serif text-xl font-medium mb-2">Architecture Simulator</h3>
+      <p class="text-neutral-600 text-sm font-light leading-relaxed">Submit a complaint and watch it route through intake → AI classifier → department in real time. Visual system design proof.</p>
+      <div class="flex gap-2 mt-4">
+        <span class="tag">Django</span>
+        <span class="tag">LLM</span>
+        <span class="tag">SSE</span>
+      </div>
+    </a>
+
+  </div>
+
+</div>
+{% endblock %}

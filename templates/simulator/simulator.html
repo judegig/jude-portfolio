@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+{% block title %}Architecture Simulator — Jude{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-6 py-16">
+
+  <div class="animate-fade-in-up">
+    <h1 class="text-3xl font-serif font-normal text-neutral-900 mb-2">Architecture Simulator</h1>
+    <p class="text-neutral-500 mb-10 font-light">Submit a complaint and watch it travel through the system in real time.</p>
+  </div>
+
+  <!-- Flow diagram -->
+  <div class="card p-8 mb-6 overflow-x-auto animate-fade-in-up delay-100">
+    <div class="flex items-center gap-3 justify-start min-w-max">
+
+      <!-- Node: Intake -->
+      <div id="node-intake" class="sim-node flex flex-col items-center gap-1.5">
+        <div class="sim-box w-14 h-14 rounded-xl bg-surface/50 border-2 border-border flex items-center justify-center">
+          <svg class="sim-icon w-6 h-6 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+          </svg>
+        </div>
+        <span class="sim-label text-xs text-neutral-500 font-light">Intake</span>
+      </div>
+
+      <div id="conn-intake-router" class="sim-conn relative w-10 h-0.5 rounded-full overflow-hidden flex-shrink-0 bg-border"></div>
+
+      <!-- Node: Router -->
+      <div id="node-router" class="sim-node flex flex-col items-center gap-1.5">
+        <div class="sim-box w-14 h-14 rounded-xl bg-surface/50 border-2 border-border flex items-center justify-center">
+          <svg class="sim-icon w-6 h-6 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>
+          </svg>
+        </div>
+        <span class="sim-label text-xs text-neutral-500 font-light">Router</span>
+      </div>
+
+      <div id="conn-router-classifier" class="sim-conn relative w-10 h-0.5 rounded-full overflow-hidden flex-shrink-0 bg-border"></div>
+
+      <!-- Node: AI Classifier -->
+      <div id="node-classifier" class="sim-node flex flex-col items-center gap-1.5">
+        <div class="sim-box w-14 h-14 rounded-xl bg-surface/50 border-2 border-border flex items-center justify-center">
+          <svg class="sim-icon w-6 h-6 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+          </svg>
+        </div>
+        <span class="sim-label text-xs text-neutral-500 font-light">AI Classifier</span>
+      </div>
+
+      <div id="conn-classifier-dept" class="sim-conn relative w-10 h-0.5 rounded-full overflow-hidden flex-shrink-0 bg-border"></div>
+
+      <!-- Department nodes -->
+      <div class="flex flex-col gap-2">
+        {% for code, name in departments.items %}
+        <div id="node-{{ code }}" class="sim-node flex items-center gap-2">
+          <div class="sim-box w-10 h-10 rounded-lg bg-surface/50 border-2 border-border flex items-center justify-center text-xs font-bold text-neutral-400">
+            {{ code|slice:":2"|upper }}
+          </div>
+          <span class="sim-label text-xs text-neutral-500 font-light">{{ name }}</span>
+        </div>
+        {% endfor %}
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Status + result -->
+  <div class="mb-6 space-y-3 min-h-[2.5rem]">
+    <div id="status-label" class="text-sm text-neutral-500 font-light transition-all duration-200"></div>
+    <div id="result-card" class="hidden card p-4">
+      <div class="flex items-center gap-3">
+        <div id="result-badge" class="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"></div>
+        <div>
+          <p id="result-dept" class="text-sm font-semibold"></p>
+          <p class="text-xs text-neutral-500 mt-0.5 font-light">Classified by AI</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div class="animate-fade-in-up delay-200">
+    <div class="card p-4 flex gap-3 items-end mb-4">
+    <textarea
+      id="complaint-input"
+      rows="2"
+      maxlength="300"
+      placeholder="Describe a complaint, e.g. 'My laptop won't connect to the VPN' or 'I was overcharged on my last invoice'..."
+      class="flex-1 bg-transparent text-sm text-neutral-800 placeholder-neutral-400 resize-none outline-none leading-relaxed font-light"
+    ></textarea>
+    <button id="submit-btn" class="btn-primary flex-shrink-0">Run Simulation</button>
+  </div>
+    <p class="text-xs text-neutral-500 font-light">Try: billing issues, technical problems, HR requests, facilities complaints.</p>
+  </div>
+
+</div>
+
+<style>
+.sim-box {
+  transition: border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sim-icon { transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.sim-label { transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* Traveling pulse along connector */
+@keyframes conn-flow {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}
+.conn-dot {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 40%;
+  height: calc(100% + 2px);
+  background: linear-gradient(90deg, transparent, #111111, transparent);
+  border-radius: 9999px;
+  animation: conn-flow 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pointer-events: none;
+}
+
+/* Classifier thinking state: pulsing glow */
+@keyframes thinking-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(17, 17, 17, 0.08); }
+  50%       { box-shadow: 0 0 24px rgba(17, 17, 17, 0.2); }
+}
+.sim-node.thinking .sim-box {
+  border-color: rgba(17, 17, 17, 0.3) !important;
+  animation: thinking-glow 1.2s ease-in-out infinite;
+}
+.sim-node.thinking .sim-icon { color: rgba(17, 17, 17, 0.7) !important; }
+</style>
+
+<script>
+const DEPT = {
+  billing:    { border: '#8B5CF6', bg: '#F5F3FF', text: '#6D28D9', name: 'Billing & Payments' },
+  technical:  { border: '#3B82F6', bg: '#EFF6FF', text: '#1D4ED8', name: 'Technical Support' },
+  hr:         { border: '#EC4899', bg: '#FDF2F8', text: '#BE185D', name: 'Human Resources' },
+  facilities: { border: '#F59E0B', bg: '#FEF3C7', text: '#B45309', name: 'Facilities' },
+  general:    { border: '#6B7280', bg: '#F3F4F6', text: '#374151', name: 'General Affairs' },
+};
+const ACTIVE = '#111111';
+
+function resetAll() {
+  document.querySelectorAll('.sim-node').forEach(n => {
+    n.classList.remove('thinking');
+    const box = n.querySelector('.sim-box');
+    if (box) { box.style.borderColor = ''; box.style.backgroundColor = ''; box.style.boxShadow = ''; box.style.animation = ''; }
+    const icon = n.querySelector('.sim-icon');
+    if (icon) icon.style.color = '';
+    const label = n.querySelector('.sim-label');
+    if (label) label.style.color = '';
+  });
+  document.querySelectorAll('.sim-conn').forEach(c => {
+    c.style.backgroundColor = '';
+    c.querySelectorAll('.conn-dot').forEach(d => d.remove());
+  });
+  document.getElementById('status-label').textContent = '';
+  document.getElementById('status-label').style.color = '';
+  document.getElementById('result-card').classList.add('hidden');
+}
+
+function setNode(id, color) {
+  const node = document.getElementById('node-' + id);
+  if (!node) return;
+  const c = color || ACTIVE;
+  const box = node.querySelector('.sim-box');
+  if (box) {
+    box.style.animation = '';
+    box.style.borderColor = c;
+    box.style.backgroundColor = c + '18';
+    box.style.boxShadow = `0 0 16px ${c}25`;
+  }
+  const icon = node.querySelector('.sim-icon');
+  if (icon) icon.style.color = c;
+  const label = node.querySelector('.sim-label');
+  if (label) label.style.color = c;
+}
+
+function flowConn(id, color) {
+  const conn = document.getElementById(id);
+  if (!conn) return Promise.resolve();
+  const dot = document.createElement('span');
+  dot.className = 'conn-dot';
+  const c = color || ACTIVE;
+  dot.style.background = `linear-gradient(90deg, transparent, ${c}, transparent)`;
+  conn.appendChild(dot);
+  return new Promise(res => setTimeout(() => {
+    dot.remove();
+    conn.style.backgroundColor = c;
+    res();
+  }, 450));
+}
+
+function startThinking() {
+  document.getElementById('node-classifier').classList.add('thinking');
+}
+function stopThinking() {
+  const n = document.getElementById('node-classifier');
+  n.classList.remove('thinking');
+  const box = n.querySelector('.sim-box');
+  if (box) box.style.animation = '';
+}
+
+function showResult(dept) {
+  const c = DEPT[dept] || DEPT.general;
+  const card = document.getElementById('result-card');
+  card.style.borderColor = c.border;
+  const badge = document.getElementById('result-badge');
+  badge.style.backgroundColor = c.bg;
+  badge.style.color = c.text;
+  badge.textContent = dept.slice(0, 2).toUpperCase();
+  const deptEl = document.getElementById('result-dept');
+  deptEl.textContent = 'Routed to: ' + c.name;
+  deptEl.style.color = c.text;
+  card.classList.remove('hidden');
+}
+
+async function runSimulation() {
+  const complaint = document.getElementById('complaint-input').value.trim();
+  if (!complaint) return;
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Running...';
+  resetAll();
+
+  const status = document.getElementById('status-label');
+
+  try {
+    const resp = await fetch("{% url 'simulator:run' %}", {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+      body: JSON.stringify({ complaint }),
+    });
+
+    const reader = resp.body.getReader();
+    const dec = new TextDecoder();
+    let buf = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      const lines = buf.split('\n');
+      buf = lines.pop();
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = JSON.parse(line.slice(6));
+        status.textContent = data.label || '';
+
+        if (data.stage === 'intake') {
+          setNode('intake');
+          await sleep(450);
+          await flowConn('conn-intake-router');
+        } else if (data.stage === 'router') {
+          setNode('router');
+          await sleep(400);
+          await flowConn('conn-router-classifier');
+          startThinking();
+        } else if (data.stage === 'classifier') {
+          stopThinking();
+          setNode('classifier');
+          await sleep(300);
+          const c = DEPT[data.dept] || DEPT.general;
+          await flowConn('conn-classifier-dept', c.border);
+        } else if (data.done && data.dept) {
+          const c = DEPT[data.dept] || DEPT.general;
+          setNode(data.dept, c.border);
+          await sleep(150);
+          showResult(data.dept);
+        } else if (data.stage === 'error') {
+          stopThinking();
+          status.style.color = '#f87171';
+        }
+      }
+    }
+  } catch (e) {
+    stopThinking();
+    status.textContent = 'Connection error.';
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Run Simulation';
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function getCookie(name) {
+  const v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  return v ? v[2] : '';
+}
+
+document.getElementById('submit-btn').addEventListener('click', runSimulation);
+document.getElementById('complaint-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); runSimulation(); }
+});
+</script>
+{% endblock %}

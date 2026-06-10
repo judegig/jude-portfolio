@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Projects — Jude{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-6 py-16">
+
+  <div class="animate-fade-in-up">
+    <h1 class="text-3xl font-serif font-normal text-neutral-900 mb-2">Projects</h1>
+    <p class="text-neutral-500 mb-12 font-light">Live systems, not toy demos.</p>
+  </div>
+
+  <!-- Terminal 01 — main feature -->
+  <div class="card p-8 mb-6 animate-fade-in-up delay-100">
+    <div class="flex items-start justify-between gap-4 mb-6">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-neutral-900 animate-pulse"></span>
+          <span class="text-[10px] text-neutral-600 font-semibold uppercase tracking-wider">Live Project</span>
+        </div>
+        <h2 class="text-2xl font-serif font-medium text-neutral-900 mb-2">Finance Tracker</h2>
+        <p class="text-neutral-600 font-light text-sm max-w-xl leading-relaxed">
+          A personal finance web app built end-to-end. Log daily expenses across 7 categories, set weekly ₹ budgets, manage loans and repayments per person, and get AI-powered spending analysis via Groq. Deployed on Render with Neon Postgres.
+        </p>
+      </div>
+      {% if tracker_url %}
+      <a href="{{ tracker_url }}" target="_blank" rel="noopener" class="btn-primary flex-shrink-0">
+        Open Live Demo &rarr;
+      </a>
+      {% else %}
+      <span class="btn-ghost flex-shrink-0 cursor-default opacity-50">Coming soon</span>
+      {% endif %}
+    </div>
+
+    <!-- Feature highlights -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+      <div class="bg-surface/40 border border-border/40 rounded-lg p-4">
+        <div class="text-2xl font-serif font-medium text-neutral-900 mb-1">30-day</div>
+        <div class="text-xs text-neutral-500 font-light">Spending trend area chart</div>
+      </div>
+      <div class="bg-surface/40 border border-border/40 rounded-lg p-4">
+        <div class="text-2xl font-serif font-medium text-neutral-900 mb-1">Loans</div>
+        <div class="text-xs text-neutral-500 font-light">Debt & repayment tracker per person</div>
+      </div>
+      <div class="bg-surface/40 border border-border/40 rounded-lg p-4">
+        <div class="text-2xl font-serif font-medium text-neutral-900 mb-1">AI</div>
+        <div class="text-xs text-neutral-500 font-light">Full analysis + per-category breakdown</div>
+      </div>
+    </div>
+
+    <!-- Tech breakdown -->
+    <div class="border-t border-border pt-6">
+      <p class="text-[10px] text-neutral-400 uppercase tracking-wider mb-3 font-semibold">Stack</p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+        <div class="bg-surface/40 border border-border/40 rounded-lg px-3 py-2">
+          <div class="text-neutral-850 font-medium text-xs">Backend</div>
+          <div class="text-neutral-500 text-[11px] font-light mt-0.5">FastAPI · SQLAlchemy · Uvicorn</div>
+        </div>
+        <div class="bg-surface/40 border border-border/40 rounded-lg px-3 py-2">
+          <div class="text-neutral-850 font-medium text-xs">Frontend</div>
+          <div class="text-neutral-500 text-[11px] font-light mt-0.5">React 18 · Recharts · Tailwind CDN</div>
+        </div>
+        <div class="bg-surface/40 border border-border/40 rounded-lg px-3 py-2">
+          <div class="text-neutral-850 font-medium text-xs">Database</div>
+          <div class="text-neutral-500 text-[11px] font-light mt-0.5">Neon Postgres (prod) · SQLite (dev)</div>
+        </div>
+        <div class="bg-surface/40 border border-border/40 rounded-lg px-3 py-2">
+          <div class="text-neutral-850 font-medium text-xs">AI</div>
+          <div class="text-neutral-500 text-[11px] font-light mt-0.5">Groq API · llama-3.3-70b-versatile</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key engineering callouts -->
+    <div class="border-t border-border pt-6 mt-6">
+      <p class="text-[10px] text-neutral-400 uppercase tracking-wider mb-3 font-semibold">Engineering highlights</p>
+      <ul class="space-y-2 text-sm text-neutral-600 font-light">
+        <li class="flex gap-2"><span class="text-neutral-900 mt-0.5">▸</span>Spending data pre-aggregated server-side before AI call — prevents model arithmetic errors on raw transaction lists</li>
+        <li class="flex gap-2"><span class="text-neutral-900 mt-0.5">▸</span>Loan balance tracked as a running total (no FK between loans and payments) — simpler schema, same query result</li>
+        <li class="flex gap-2"><span class="text-neutral-900 mt-0.5">▸</span>Weekly budgets stored in localStorage — amber at 80%, red at 100%, no server round-trip</li>
+        <li class="flex gap-2"><span class="text-neutral-900 mt-0.5">▸</span>Trend chart only plots days with transactions — sparse data renders cleanly without zero-fill noise</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- More projects teaser -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in-up delay-200">
+    <a href="{% url 'agent:page' %}" class="card p-6 hover:border-neutral-900 transition-all duration-200 block">
+      <h3 class="text-neutral-900 font-serif text-xl font-medium mb-2">Career Agent</h3>
+      <p class="text-neutral-600 text-sm font-light leading-relaxed">Django backend + streaming LLM chat. Try it yourself.</p>
+    </a>
+    <a href="{% url 'simulator:page' %}" class="card p-6 hover:border-neutral-900 transition-all duration-200 block">
+      <h3 class="text-neutral-900 font-serif text-xl font-medium mb-2">Architecture Simulator</h3>
+      <p class="text-neutral-600 text-sm font-light leading-relaxed">Watch an AI triage system route your complaint live.</p>
+    </a>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Jude — Portfolio{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            surface: '#EAE5E0',
+            panel:   '#FAF8F6',
+            border:  '#C8C0B8',
+            accent:  '#111111',
+            'accent-hover': '#333333',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+  <style type="text/tailwindcss">
+    body { background-color: #EAE5E0; }
+    .nav-link { @apply text-neutral-500 hover:text-neutral-900 transition-colors duration-150 text-xs uppercase tracking-wider font-semibold; }
+    .nav-link.active { @apply text-neutral-900; }
+    .card { @apply bg-transparent border border-[#C8C0B8] rounded-xl; }
+    .btn-primary { @apply bg-[#111111] hover:bg-[#333333] text-white font-medium px-5 py-2.5 rounded-lg transition-all duration-150 text-xs uppercase tracking-wider font-semibold; }
+    .btn-ghost { @apply text-neutral-600 hover:text-neutral-900 border border-[#C8C0B8] hover:border-[#111111] px-5 py-2.5 rounded-lg transition-all duration-150 text-xs uppercase tracking-wider font-semibold; }
+    .tag { @apply bg-[#111111]/5 text-neutral-700 text-[10px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full border border-[#111111]/10; }
+  </style>
+  <style>
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translate3d(0, 24px, 0);
+        filter: blur(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+        filter: blur(0px);
+      }
+    }
+    @keyframes fadeInLeft {
+      from {
+        opacity: 0;
+        transform: translate3d(-32px, 0, 0);
+        filter: blur(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+        filter: blur(0px);
+      }
+    }
+    @keyframes fadeInRight {
+      from {
+        opacity: 0;
+        transform: translate3d(32px, 0, 0);
+        filter: blur(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+        filter: blur(0px);
+      }
+    }
+    .animate-fade-in-up {
+      animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform: translateZ(0);
+    }
+    .animate-fade-in-left {
+      animation: fadeInLeft 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform: translateZ(0);
+    }
+    .animate-fade-in-right {
+      animation: fadeInRight 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform: translateZ(0);
+    }
+    .delay-100 { animation-delay: 150ms; }
+    .delay-200 { animation-delay: 300ms; }
+    .delay-300 { animation-delay: 450ms; }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="h-full text-neutral-900 font-sans antialiased bg-surface">
+
+  <!-- Top nav -->
+  <nav class="fixed top-0 left-0 right-0 z-50 border-b border-[#C8C0B8] bg-surface/85 backdrop-blur-md">
+    <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="{% url 'core:home' %}" class="text-neutral-900 font-serif text-lg tracking-widest font-bold">JUDE</a>
+      <div class="flex items-center gap-6">
+        <a href="{% url 'agent:page' %}"    class="nav-link {% if request.resolver_match.app_name == 'agent' %}active{% endif %}">Career Agent</a>
+        <a href="{% url 'showcase:page' %}" class="nav-link {% if request.resolver_match.app_name == 'showcase' %}active{% endif %}">Projects</a>
+        <a href="{% url 'simulator:page' %}" class="nav-link {% if request.resolver_match.app_name == 'simulator' %}active{% endif %}">Simulator</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main class="pt-14 min-h-screen">
+    {% block content %}{% endblock %}
+  </main>
+
+</body>
+</html>
